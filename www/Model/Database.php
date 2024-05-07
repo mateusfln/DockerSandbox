@@ -5,7 +5,7 @@ require_once __DIR__ . '/../Config/env.php';
 /**
  * Classe do banco de dados utilizando o pattern Singleton
  */
-class Database
+class Database extends PDO
 {
     private string $host = DB_HOST;
     private string $db = DB_DB;
@@ -29,14 +29,9 @@ class Database
      */
     private function conn() : PDO
     {
-        $conn = new PDO("mysql:
-            host=$this->host;
-            dbname=$this->db", 
+        $conn = new PDO("mysql:host={$this->host};dbname={$this->db}", 
             $this->username, 
             $this->password);
-
-        $conn->setAttribute(PDO::ATTR_ERRMODE, 
-        PDO::ERRMODE_EXCEPTION);
 
         return $conn;
     }
@@ -52,5 +47,13 @@ class Database
             self::$instance = new Database();
         }
         return self::$instance;
+    }
+    /**
+     * Método para instanciar uma nova conexão com o banco de dados
+     * @return PDO
+     */
+    public function getConnection() : PDO
+    {
+        return $this->conn;
     }
 }
